@@ -39,19 +39,15 @@ CASE
 	ELSE ACCT_NUM 
 END as "AccountNumber",
 
-/*CASE 
+CASE 
     WHEN HCSC_PPRO_BOB_DATA.CREATE_DATE = HCSC_PPRO_BOB_DATA.LAST_UPDT_DATE THEN 'I'
     ELSE 'U'
-END AS "OpType"*/
-null as "OpType"
+END AS "OpType"
 
 
 FROM HCSC_PPRO_BOB_DATA
 WHERE 
 LAST_UPDT_DATE = TO_CHAR(SYSDATE, 'YYYYMMDD')
---LAST_UPDT_DATE = '20191023'
---LAST_UPDT_DATE BETWEEN 20191005 and 20191010
---AND LAST_UPDT_DATE = CREATE_DATE
 AND 
 ACCT_END_DATE <= 22000101
 AND ACCT_EFF_DATE <= ACCT_END_DATE
@@ -63,13 +59,13 @@ ORDER BY "AccountRefNumber"
 ) A
                   
 				  --This is the part that takes too long --
-/*WHERE (NOT EXISTS (SELECT 1 FROM HCSC_PPRO_BOB_DATA H
+                --   It is basically making sure a record doesn't have both an Update and Insert -- 
+WHERE (NOT EXISTS (SELECT 1 FROM HCSC_PPRO_BOB_DATA H
                     WHERE A."AccountRefNumber" = CONCAT(POLICY_STATE, CASE 
                                                         WHEN PARENT_ACCT_NUM IS NOT NULL AND MKT_SEGMENT = 'TAC' THEN PARENT_ACCT_NUM 
                                                         ELSE ACCT_NUM 
                                                     END)
                     AND H.LAST_UPDT_DATE = TO_CHAR(SYSDATE, 'YYYYMMDD')
---AND H.LAST_UPDT_DATE = '20191023'
                     AND H.ACCT_END_DATE <= 22000101
                     AND H.ACCT_EFF_DATE <= H.ACCT_END_DATE
                     AND H.ACCT_NUM is not null
@@ -81,11 +77,10 @@ ORDER BY "AccountRefNumber"
                                                         ELSE ACCT_NUM 
                                                     END) 
                     AND D.LAST_UPDT_DATE = TO_CHAR(SYSDATE, 'YYYYMMDD')
---AND D.LAST_UPDT_DATE = '20191023'
                     AND D.ACCT_END_DATE <= 22000101
                     AND D.ACCT_EFF_DATE <= D.ACCT_END_DATE
                     AND D.ACCT_NUM is not null
                     AND D.LAST_UPDT_DATE != D.CREATE_DATE
                     )
-                    )*/
+                    )
 					;
